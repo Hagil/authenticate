@@ -4,6 +4,8 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 // load up the user model
 var User            = require('../app/models/user');
 
+var configAuth = require('./auth');
+
 // expose this function to our app using module.exports
 module.exports = function(passport) {
 
@@ -104,7 +106,6 @@ module.exports = function(passport) {
             return done(null, user);
         });
     }));
-};
 
     passport.use(new FacebookStrategy({
     
@@ -156,3 +157,4 @@ module.exports = function(passport) {
             });
     
         }));
+    };
