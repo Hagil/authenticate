@@ -1,1 +1,1 @@
-new site for authenticate
+new site for node authentication (Local, FB, Twitter, Google)
