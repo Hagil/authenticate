@@ -6,40 +6,24 @@ module.exports = function (app, passport) {
         res.render('index.ejs'); // load the index.ejs file
     });
 
-    // LOGIN ===============================
-    // show the login form
-    app.get('/login', function (req, res) {
+    var local_routes = require('./local_routes')
+    local_routes(app, passport);
 
-        // render the page and pass in any flash data if it exists
-        res.render('login.ejs', {
-            message: req.flash('loginMessage')
-        });
+    var facebook_routes = require('./facebook_routes');
+    facebook_routes(app, passport);
+    
+    var twitter_routes = require('./twitter_routes');
+    twitter_routes(app, passport);
+    
+    var google_routes = require('./google_routes');
+    google_routes(app, passport);
+    
+    // route for logging out
+    app.get('/logout', function (req, res) {
+        req.logout();
+        res.redirect('/');
     });
-
-    // process the login form
-    app.post('/login', passport.authenticate('local-login', {
-        successRedirect: '/profile', // redirect to the secure profile section
-        failureRedirect: '/login', // redirect back to the signup page if there is an error
-        failureFlash: true // allow flash messages
-    }));
-
-    // SIGNUP ==============================
-    // show the signup form
-    app.get('/signup', function (req, res) {
-
-        // render the page and pass in any flash data if it exists
-        res.render('signup.ejs', {
-            message: req.flash('signupMessage')
-        });
-    });
-
-    // process the signup form
-    app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect: '/profile',
-        failureRedirect: '/signup',
-        failureFlash: true
-    }));
-
+    
     // PROFILE SECTION =====================
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)
@@ -60,11 +44,6 @@ module.exports = function (app, passport) {
             failureRedirect: '/'
         }));
 
-    // route for logging out
-    app.get('/logout', function (req, res) {
-        req.logout();
-        res.redirect('/');
-    });
     app.get('/auth/twitter', passport.authenticate('twitter'));
 
     // handle the callback after twitter has authenticated the user
@@ -96,49 +75,6 @@ module.exports = function (app, passport) {
         failureRedirect: '/connect/local', // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
     }));
-
-    // facebook -------------------------------
-
-    // send to facebook to do the authentication
-    app.get('/connect/facebook', passport.authorize('facebook', {
-        scope: 'email'
-    }));
-
-    // handle the callback after facebook has authorized the user
-    app.get('/connect/facebook/callback',
-        passport.authorize('facebook', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
-
-    // twitter --------------------------------
-
-    // send to twitter to do the authentication
-    app.get('/connect/twitter', passport.authorize('twitter', {
-        scope: 'email'
-    }));
-
-    // handle the callback after twitter has authorized the user
-    app.get('/connect/twitter/callback',
-        passport.authorize('twitter', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
-
-
-    // google ---------------------------------
-
-    // send to google to do the authentication
-    app.get('/connect/google', passport.authorize('google', {
-        scope: ['profile', 'email']
-    }));
-
-    // the callback after google has authorized the user
-    app.get('/connect/google/callback',
-        passport.authorize('google', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
 
     // =============================================================================
     // UNLINK ACCOUNTS =============================================================
