@@ -19,7 +19,7 @@ mongoose.connect(configDB.url, {
 mongoose.Promise = require('bluebird');
 
 
-require('./config/passport')(passport); // pass passport for configuration
+require('./config/passport/main_passport')(passport); // pass passport for configuration
 
 // set up our express application
 app.use(express.static('public'));
