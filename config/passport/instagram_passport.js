@@ -1,5 +1,5 @@
 function instagram_passport(User, passport) {
-    var InstagramStrategy = require('passport-instagram').Strategy;
+    var InstagramStrategy = require('passport-instagram').Strategy;;
     // load up the user model
     var User = require('../../app/models/user');
 
@@ -10,7 +10,6 @@ function instagram_passport(User, passport) {
             clientID: configAuth.instagramAuth.clientID,
             clientSecret: configAuth.instagramAuth.clientSecret,
             callbackURL: configAuth.instagramAuth.callbackURL,
-            profileFields: configAuth.instagramAuth.profileFields,
             passReqToCallback: true
         },
         // instagram will send back the token and profile
@@ -31,8 +30,8 @@ function instagram_passport(User, passport) {
                         if (user) {
                             if (!user.instagram.token) {
                                 user.instagram.token = token;
-                                user.instagram.name = profile.name.givenName + ' ' + profile.name.familyName;
-                                user.instagram.email = profile.emails[0].value;
+                                user.instagram.username = profile.username;
+                                user.instagram.displayName = profile.displayName;
 
                                 user.save(function (err) {
                                     if (err)
@@ -48,8 +47,8 @@ function instagram_passport(User, passport) {
                             // set all of the instagram information in our user model
                             newUser.instagram.id = profile.id; // set the users instagram id                   
                             newUser.instagram.token = token; // we will save the token that instagram provides to the user                    
-                            newUser.instagram.name = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
-                            newUser.instagram.email = profile.emails[0].value; // instagram can return multiple emails so we'll take the first
+                            newUser.instagram.username = profile.username; // look at the passport user profile to see how names are returned
+                            newUser.instagram.displayName = profile.displayName; // instagram can return multiple emails so we'll take the first
 
                             // save our user to the database
                             newUser.save(function (err) {
@@ -68,8 +67,8 @@ function instagram_passport(User, passport) {
                     // update the current users instagram credentials
                     user.instagram.id = profile.id;
                     user.instagram.token = token;
-                    user.instagram.name = profile.name.givenName + ' ' + profile.name.familyName;
-                    user.instagram.email = profile.emails[0].value;
+                    user.instagram.username = profile.username;
+                    user.instagram.displayName = profile.displayName;
 
                     // save the user
                     user.save(function (err) {

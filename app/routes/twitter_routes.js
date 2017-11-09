@@ -11,5 +11,13 @@ function twitter_routes(app, passport) {
             successRedirect: '/profile',
             failureRedirect: '/'
         }));
+    app.get('/auth/twitter', passport.authenticate('twitter'));
+
+    // handle the callback after twitter has authenticated the user
+    app.get('/auth/twitter/callback',
+        passport.authenticate('twitter', {
+            successRedirect: '/profile',
+            failureRedirect: '/'
+        }));
 }
 module.exports = twitter_routes;

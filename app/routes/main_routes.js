@@ -11,16 +11,16 @@ module.exports = function (app, passport) {
 
     var facebook_routes = require('./facebook_routes');
     facebook_routes(app, passport);
-    
+
     var twitter_routes = require('./twitter_routes');
     twitter_routes(app, passport);
-    
+
     var instagram_routes = require('./instagram_routes');
     instagram_routes(app, passport);
 
     var google_routes = require('./google_routes');
     google_routes(app, passport);
-    
+
     // route for logging out
     app.get('/logout', function (req, res) {
         req.logout();
@@ -36,42 +36,7 @@ module.exports = function (app, passport) {
         });
     });
 
-    app.get('/auth/facebook', passport.authenticate('facebook', {
-        scope: 'email'
-    }));
 
-    // handle the callback after facebook has authenticated the user
-    app.get('/auth/facebook/callback',
-        passport.authenticate('facebook', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
-
-    app.get('/auth/twitter', passport.authenticate('twitter'));
-
-    // handle the callback after twitter has authenticated the user
-    app.get('/auth/twitter/callback',
-        passport.authenticate('twitter', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
-
-    app.get('/auth/google', passport.authenticate('google', {
-        scope: ['profile', 'email']
-    }));
-
-    // the callback after google has authenticated the user
-    app.get('/auth/google/callback',
-        passport.authenticate('google', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
-
-        app.get('/auth/instagram/callback',
-        passport.authenticate('instagram', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
 
 
     //locally
@@ -131,7 +96,7 @@ module.exports = function (app, passport) {
     });
     app.get('/unlink/instagram', function (req, res) {
         var user = req.user;
-        user.instagram.username = undefined;
+        user.instagram.token = undefined;
         user.save(function (err) {
             res.redirect('/profile');
         });
