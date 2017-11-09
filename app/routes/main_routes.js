@@ -15,6 +15,9 @@ module.exports = function (app, passport) {
     var twitter_routes = require('./twitter_routes');
     twitter_routes(app, passport);
     
+    var instagram_routes = require('./instagram_routes');
+    instagram_routes(app, passport);
+
     var google_routes = require('./google_routes');
     google_routes(app, passport);
     
@@ -23,7 +26,7 @@ module.exports = function (app, passport) {
         req.logout();
         res.redirect('/');
     });
-    
+
     // PROFILE SECTION =====================
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)
@@ -63,6 +66,13 @@ module.exports = function (app, passport) {
             successRedirect: '/profile',
             failureRedirect: '/'
         }));
+
+        app.get('/auth/instagram/callback',
+        passport.authenticate('instagram', {
+            successRedirect: '/profile',
+            failureRedirect: '/'
+        }));
+
 
     //locally
     app.get('/connect/local', function (req, res) {
@@ -115,6 +125,13 @@ module.exports = function (app, passport) {
     app.get('/unlink/google', function (req, res) {
         var user = req.user;
         user.google.token = undefined;
+        user.save(function (err) {
+            res.redirect('/profile');
+        });
+    });
+    app.get('/unlink/instagram', function (req, res) {
+        var user = req.user;
+        user.instagram.username = undefined;
         user.save(function (err) {
             res.redirect('/profile');
         });
